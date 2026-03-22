@@ -1,18 +1,19 @@
 /**
  * Simulated “live” AI suggestion — experiment logic unchanged (copy still comes from the spreadsheet).
- * Whole AI block (search + typing) capped at MAX_STREAM_MS; after SLOW_HINT_AFTER_MS the label text changes.
- * (That message only appears on trials with the AI animation — not on first-page load time.)
+ * Whole AI block (search + typing) capped at MAX_STREAM_MS.
+ * “Searching…” duration is random per trial (up to THINKING_MS_MAX); from SLOW_HINT_AFTER_MS the label
+ * switches to the slow message until the searching phase ends (or typing starts).
  */
 
 const MS_PER_CHAR = 26;
-/** “Searching…” phase — random length per trial; also clamped to fit in MAX_STREAM_MS. */
+/** “Searching…” phase — random length per trial (clamped to fit in MAX_STREAM_MS minus typing budget). */
 export const THINKING_MS_MIN = 700;
-export const THINKING_MS_MAX = 5000;
+export const THINKING_MS_MAX = 8000;
 
 const PAUSE_AFTER_SUG_MS = 220;
 /** Total AI animation time (start to end of text) — upper cap. */
 export const MAX_STREAM_MS = 8000;
-/** After this time from start, if still in the searching phase — switch the message. */
+/** While still in the searching phase — after this delay from start, swap the label to SLOW_HINT_TEXT. */
 export const SLOW_HINT_AFTER_MS = 5000;
 /** Shown to participants (Polish UI). */
 const SLOW_HINT_TEXT = "Przeszukiwanie zajmuje dłużej niż zazwyczaj…";
@@ -48,19 +49,12 @@ function estimateTypingMs(suggestion, explanation, withExplanation) {
   return t;
 }
 
-/**
- * Actual “searching” phase duration: fits in MAX_STREAM_MS − typing time,
- * and if there is room — at least SLOW_HINT_AFTER_MS so the 5s hint can appear.
- */
+/** Actual “searching” phase duration: sampled random length, capped by MAX_STREAM_MS − typing time. */
 function computeThinkingDurationMs(sug, exp, withExp, sampledMs) {
   const thinking = clampThinkingMs(sampledMs);
   const typingBudget = estimateTypingMs(sug, exp, withExp);
   const room = MAX_STREAM_MS - typingBudget;
-  let maxThinking = Math.max(0, Math.min(thinking, room));
-  if (room >= SLOW_HINT_AFTER_MS && maxThinking < SLOW_HINT_AFTER_MS) {
-    maxThinking = Math.min(SLOW_HINT_AFTER_MS, room);
-  }
-  return maxThinking;
+  return Math.max(0, Math.min(thinking, room));
 }
 
 /** Estimate for CSV (does not block buttons). */
@@ -107,7 +101,7 @@ export async function runAiStream(rootEl) {
   const cursorExp = rootEl.querySelector(".tw-cursor-exp");
 
   let slowTimer = null;
-  if (thinking && labelEl) {
+  if (thinking && labelEl && thinkingMs > 0) {
     slowTimer = window.setTimeout(function () {
       const lab = rootEl.querySelector(".ai-thinking-label");
       const pan = rootEl.querySelector(".ai-thinking");
@@ -141,7 +135,10 @@ export async function runAiStream(rootEl) {
     if (performance.now() >= deadline) break;
   }
 
-  /** Do not clearTimeout(slowTimer) — on a short phase the timer might never fire. */
+  if (slowTimer != null) {
+    clearTimeout(slowTimer);
+    slowTimer = null;
+  }
 
   if (thinking) thinking.remove();
   if (body) {

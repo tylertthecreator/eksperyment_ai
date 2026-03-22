@@ -13,8 +13,8 @@ body {
 /* Safe-area (notch) + extra top/bottom padding */
 .jspsych-content-wrapper {
   box-sizing: border-box;
-  padding-left: max(1rem, env(safe-area-inset-left, 0px));
-  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
   padding-top: max(1.75rem, env(safe-area-inset-top, 0px));
   padding-bottom: max(2.25rem, env(safe-area-inset-bottom, 0px));
   min-height: 100%;
@@ -30,6 +30,7 @@ body {
 /* One question per screen — readable block centered in the viewport */
 #jspsych-content {
   min-height: min(88vh, calc(100dvh - 3.5rem));
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -37,6 +38,19 @@ body {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+/* Likert (Skala Delta, zaufanie): plugin lays out edge-to-edge — extra inset on top of wrapper padding */
+#jspsych-content:has(#jspsych-survey-likert-form) {
+  padding-left: 0.65rem;
+  padding-right: 0.65rem;
+}
+
+@media (max-width: 480px) {
+  #jspsych-content:has(#jspsych-survey-likert-form) {
+    padding-left: 0.95rem;
+    padding-right: 0.95rem;
+  }
 }
 
 .trial-page {

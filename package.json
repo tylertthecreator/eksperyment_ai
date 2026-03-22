@@ -1,0 +1,22 @@
+{
+  "name": "eksperyment_ai",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node scripts/vendor-copy.mjs",
+    "build": "node scripts/vendor-copy.mjs && node scripts/copy-to-public.mjs",
+    "start": "npx --yes serve -l 3000 .",
+    "dev": "vercel dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@jspsych/plugin-html-button-response": "^2.1.0",
+    "@jspsych/plugin-survey-likert": "^2.2.0",
+    "@jspsych/plugin-survey-multi-choice": "^2.2.0",
+    "jspsych": "^7.3.4"
+  }
+}

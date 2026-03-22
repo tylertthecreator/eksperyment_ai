@@ -1,0 +1,329 @@
+/* Ekran startowy (index.html) — znika po init jsPsych */
+.eksperyment-boot {
+  max-width: 28rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Jedno pytanie na ekran — czytelny blok na środku widoku */
+#jspsych-content {
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.trial-page {
+  max-width: 42rem;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0.5rem 0 1.5rem;
+}
+
+@keyframes trialEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.trial-page--enter {
+  animation: trialEnter 0.45s ease-out both;
+}
+
+@keyframes fadeReveal {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-in {
+  animation: fadeReveal 0.55s ease-out 0.08s both;
+}
+
+.reveal-in--delay {
+  animation-delay: 0.2s;
+}
+
+.trial-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.trial-progress {
+  font-size: 0.875rem;
+  color: #555;
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 8rem;
+}
+
+.score-box {
+  flex: 0 0 auto;
+  text-align: right;
+  padding: 0.35rem 0.65rem;
+  background: #fff;
+  border: 1px solid #dde3ec;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.score-label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.score-value {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-sub {
+  display: block;
+  font-size: 0.68rem;
+  color: #94a3b8;
+  margin-top: 0.1rem;
+}
+
+.trial-page .q-text {
+  font-size: 1.2rem;
+  line-height: 1.45;
+  margin: 0 0 1rem;
+}
+
+.q-options-stack {
+  margin: 0 0 1.25rem;
+}
+
+.q-option-line {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #222;
+}
+
+.q-option-line:last-child {
+  margin-bottom: 0;
+}
+
+/* Blok „generowania” AI — wygląd chat / asystenta */
+.ai-stream-root {
+  margin: 0 0 1.25rem;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Jedna ramka: najpierw tylko „Generowanie…”, potem w tym samym miejscu treść sugestii */
+.ai-panel {
+  border: 1px solid #c7d2fe;
+  border-radius: 12px;
+  min-height: 3.25rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+  overflow: hidden;
+}
+
+.ai-thinking {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  min-height: 3rem;
+  box-sizing: border-box;
+}
+
+/* Gdy zostanie tylko atrybut hidden (bez remove), flex z powyższego nie może nadpisywać ukrycia */
+.ai-thinking[hidden] {
+  display: none !important;
+}
+
+.ai-thinking-label {
+  font-size: 0.88rem;
+  color: #475569;
+}
+
+.ai-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6366f1;
+  animation: aiDot 1.1s ease-in-out infinite;
+}
+
+.ai-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.ai-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes aiDot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ai-panel .ai-body {
+  margin-top: 0;
+  padding: 1rem 1.1rem 1.1rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  border-left: 3px solid #6366f1;
+  box-sizing: border-box;
+}
+
+.ai-body--visible {
+  animation: fadeReveal 0.35s ease-out both;
+}
+
+.ai-line {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.tw-exp {
+  margin: 0.75rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #334155;
+  white-space: pre-wrap;
+}
+
+/* Bez migania — tylko podczas wpisywania, potem ukrywany w JS */
+.tw-cursor {
+  display: inline-block;
+  color: #6366f1;
+  font-weight: 300;
+  opacity: 1;
+}
+
+#jspsych-html-button-response-btngroup {
+  margin-top: 1.25rem;
+  width: 100%;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: stretch;
+  gap: 0.5rem;
+}
+
+#jspsych-html-button-response-btngroup.jspsych-btn-group-grid {
+  grid-template-columns: 1fr;
+}
+
+#jspsych-html-button-response-btngroup .jspsych-btn {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.trial-footer-disclaimer {
+  margin-top: 1.75rem;
+  padding: 0.85rem 0.75rem 0;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 0.84rem;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.45;
+  border-top: 1px solid #e2e8f0;
+}
+
+.likert-preamble {
+  font-size: 0.95rem;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+/* Ankiety na początku (demografia + Skala Delta) */
+.survey-block--demo {
+  max-width: 40rem;
+  margin: 0 auto 1rem;
+  text-align: left;
+}
+
+.survey-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0 0 0.5rem;
+}
+
+.survey-lead {
+  font-size: 0.95rem;
+  color: #475569;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.survey-block-intro {
+  max-width: 40rem;
+  margin: 0 auto 0.35rem;
+  text-align: left;
+  line-height: 1.45;
+}
+
+.survey-hint {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin: 0 0 0.75rem;
+  line-height: 1.45;
+}
+
+.survey-part-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #334155;
+  margin: 0.5rem 0 0.75rem;
+}
+
+#jspsych-content .jspsych-survey-multi-choice-question {
+  max-width: 40rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  margin-bottom: 1.25rem;
+}
+
+#jspsych-content .jspsych-survey-likert-statement {
+  max-width: 40rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  text-align: left;
+  padding-top: 1.5rem !important;
+}
+
+#jspsych-content .jspsych-survey-likert-opts {
+  max-width: 720px;
+}
